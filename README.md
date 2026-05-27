@@ -67,11 +67,11 @@ npm install
 npx playwright install
 ```
 
-**3. Create `.env` file**
+**3. Create `.env` file** (copy from `.env.example` and fill in your credentials)
 ```
 BASE_URL=https://opensource-demo.orangehrmlive.com
-LOGIN_USERNAME=Admin
-LOGIN_PASSWORD=admin123
+LOGIN_USERNAME=<username>
+LOGIN_PASSWORD=<password>
 ```
 
 ---
@@ -120,3 +120,25 @@ Logs are written to `logs/` at runtime (gitignored).
 ```bash
 npm run logs:clear
 ```
+
+---
+
+## Vault (Obsidian Docs)
+
+The `vault/` folder contains framework documentation written in Markdown, designed to be opened in [Obsidian](https://obsidian.md).
+
+**To open in Obsidian:**
+1. Download and install [Obsidian](https://obsidian.md)
+2. Click **Open folder as vault**
+3. Select the `vault/` folder inside this project
+
+**Notes:**
+| File | Contents |
+|---|---|
+| `Project-Overview.md` | Stack, app under test, credentials, run commands |
+| `Framework-Architecture.md` | Layer diagram, execution flow, file roles |
+| `Framework-Rules.md` | Naming conventions, page object rules, test rules |
+| `Folder-Structure.md` | Full directory tree with descriptions |
+| `Locator-Strategy.md` | Locator priority order with real examples |
+| `Reusable-Patterns.md` | Copy-paste patterns for pages, fixtures, config, logger |
+| `Known-Issues.md` | Windows env var conflicts and resolved bugs |

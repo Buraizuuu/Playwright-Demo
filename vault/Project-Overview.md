@@ -36,11 +36,11 @@ Learn and build a clean Playwright automation framework using best practices —
 | Centralized logging | `utils/logger.ts` |
 
 ## Test Credentials
-Stored in `.env` — never hardcoded in tests.
+Stored in `.env` — never hardcoded in tests. See `.env.example` for the required variables.
 ```
 BASE_URL=https://opensource-demo.orangehrmlive.com
-LOGIN_USERNAME=Admin
-LOGIN_PASSWORD=admin123
+LOGIN_USERNAME=<username>
+LOGIN_PASSWORD=<password>
 ```
 
 ## Run Commands
