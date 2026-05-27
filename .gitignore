@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Environment variables — never commit credentials
+.env
+.env.local
+.env*.local
+
+# Playwright output
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Auth state — contains session cookies, never commit
+.auth/
+
+
+# Claude
+.claude/
+
+# Winston logs — generated at runtime, never committed
+logs/
+
+# Obsidian workspace state — user-specific, not shared
+vault/.obsidian/workspace.json
+vault/.obsidian/workspace-mobile.json
+vault/.obsidian/graph.json
+
+# OS files
+.DS_Store
+Thumbs.db
