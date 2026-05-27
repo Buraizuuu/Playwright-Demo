@@ -102,6 +102,48 @@ Do not stop after modifying a single file when shared dependencies exist.
 
 ---
 
+# Git Rules
+
+## Before Every Commit
+
+Scan all staged files for sensitive data before committing. This includes:
+- Hardcoded credentials (usernames, passwords, tokens, API keys)
+- Real environment values (URLs with embedded auth, secrets)
+- Session data or cookies
+
+Files that commonly leak credentials in this project:
+- `vault/*.md` — documentation may accidentally include real `.env` values
+- `README.md` — setup examples must use placeholders, not real values
+- `.env.example` — must show placeholders only, never real credentials
+
+## Safe Patterns
+
+✅ Always safe to commit:
+```ts
+process.env.LOGIN_USERNAME   // reads from .env at runtime
+config.username              // reads from configs/env.ts
+```
+
+❌ Never commit:
+```
+LOGIN_PASSWORD=<actual_password>   // real credential hardcoded in docs
+```
+
+✅ Use placeholders in docs and examples:
+```
+LOGIN_USERNAME=<username>
+LOGIN_PASSWORD=<password>
+```
+
+## Files That Must Never Be Committed
+- `.env` — real credentials
+- `.auth/user.json` — live session cookies
+- `logs/` — runtime output
+
+These are covered by `.gitignore` — do not remove them from it.
+
+---
+
 # Documentation Synchronization
 
 When requested:
