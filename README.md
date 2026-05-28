@@ -123,6 +123,25 @@ npm run logs:clear
 
 ---
 
+## Claude Code Agent
+
+This project includes a custom Claude Code agent — **qa-sentinel** — specialised for Playwright TypeScript automation.
+
+**Invoke it with:**
+```
+@agent-qa-sentinel <your request>
+```
+
+**What it handles:**
+- Writing and reviewing page objects, fixtures, and tests
+- Diagnosing flaky tests and synchronization issues
+- Refactoring automation code with full dependency analysis
+- Enforcing all project conventions (locator priority, import rules, POM structure)
+
+The agent definition lives at `.claude/agents/qa-sentinel.md` and its persistent memory at `.claude/agent-memory/qa-sentinel/`.
+
+---
+
 ## Vault (Obsidian Docs)
 
 The `vault/` folder contains framework documentation written in Markdown, designed to be opened in [Obsidian](https://obsidian.md).

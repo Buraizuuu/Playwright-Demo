@@ -17,16 +17,11 @@ node_modules/
 .auth/
 
 
-# Claude
-.claude/
+# Claude — commit agent definitions and memory, ignore local settings
+.claude/settings.local.json
 
 # Winston logs — generated at runtime, never committed
 logs/
-
-# Obsidian workspace state — user-specific, not shared
-vault/.obsidian/workspace.json
-vault/.obsidian/workspace-mobile.json
-vault/.obsidian/graph.json
 
 # OS files
 .DS_Store

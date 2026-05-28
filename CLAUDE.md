@@ -10,16 +10,6 @@
 
 # Project Context
 
-Before generating or modifying code, always read:
-
-- vault/Project-Overview.md
-- vault/Framework-Architecture.md
-- vault/Framework-Rules.md
-- vault/Folder-Structure.md
-- vault/Locator-Strategy.md
-- vault/Reusable-Patterns.md
-- vault/Known-Issues.md
-
 Analyze the existing codebase structure before implementing changes.
 
 ---
@@ -88,15 +78,14 @@ When changes affect shared functionality:
 1. Scan the codebase for affected references
 2. Update dependent files consistently
 3. Verify naming and import consistency
-4. Update related vault documentation
 
 Examples:
 
 - Renaming an env variable (e.g. `PASSWORD` → `LOGIN_PASSWORD`)
-  requires updating: `.env`, `configs/env.ts`, all test/page references, vault docs
+  requires updating: `.env`, `configs/env.ts`, all test/page references
 
 - Moving or renaming a folder
-  requires updating: all imports, `Folder-Structure.md`, `Framework-Architecture.md`
+  requires updating: all imports and `CLAUDE.md` if folder structure is documented
 
 Do not stop after modifying a single file when shared dependencies exist.
 
@@ -112,7 +101,6 @@ Scan all staged files for sensitive data before committing. This includes:
 - Session data or cookies
 
 Files that commonly leak credentials in this project:
-- `vault/*.md` — documentation may accidentally include real `.env` values
 - `README.md` — setup examples must use placeholders, not real values
 - `.env.example` — must show placeholders only, never real credentials
 
@@ -143,24 +131,6 @@ LOGIN_PASSWORD=<password>
 These are covered by `.gitignore` — do not remove them from it.
 
 ---
-
-# Documentation Synchronization
-
-When requested:
-- Analyze the current codebase
-- Update existing vault notes — do not create unnecessary new ones
-- Keep vault in sync with the actual implementation
-
-Focus on:
-- reusable patterns
-- framework architecture
-- locator strategies
-- important implementation decisions
-- known issues
-
-Avoid:
-- noisy or redundant notes
-- trivial implementation details
 
 ---
 
@@ -215,6 +185,27 @@ Prefer verifiable outcomes. Avoid vague completion criteria.
 
 ---
 
+# Available Agents
+
+## qa-sentinel
+
+A specialised sub-agent for Playwright TypeScript automation tasks.
+
+**Definition:** `.claude/agents/qa-sentinel.md`
+**Memory:** `.claude/agent-memory/qa-sentinel/`
+
+**Invoke with:** `@agent-qa-sentinel <request>`
+
+**Use for:**
+- Writing or reviewing page objects, fixtures, and test specs
+- Diagnosing flaky tests or synchronization failures
+- Refactoring automation code with downstream impact analysis
+- Enforcing POM conventions, locator strategy, and import rules
+
+**Do not use for:** general TypeScript, infrastructure changes, or non-test code.
+
+---
+
 # Expected AI Behavior
 
 When implementing:
@@ -226,7 +217,6 @@ When implementing:
 When refactoring:
 - Perform dependency analysis first
 - Propagate changes safely across all affected files
-- Keep vault documentation synchronized
 
 When unsure:
 - Ask before implementing

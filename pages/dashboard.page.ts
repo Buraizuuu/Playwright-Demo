@@ -14,7 +14,7 @@ export class DashboardPage {
   }
 
   async verifyDashboardLoaded(): Promise<void> {
-    await expect(this.page).toHaveURL(/asda/);
+    await expect(this.page).toHaveURL(/dashboard/);
     await expect(this.heading).toBeVisible();
   }
 }
