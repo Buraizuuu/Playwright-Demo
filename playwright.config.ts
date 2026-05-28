@@ -6,10 +6,11 @@ export default defineConfig({
   testDir: './tests',
   globalSetup: './configs/global-setup',
   globalTeardown: './configs/global-teardown',
-  fullyParallel: true,
+  fullyParallel: false, // true = run tests in parallel
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1, // undefined = auto (CPU-based), 1 = sequential
+
   reporter: [
     ['html'],
     ['allure-playwright', { resultsDir: 'allure-results' }],
