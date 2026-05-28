@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🎭 Playwright Demo
+# 🎭 OrangeHRM Test Automation
 
-### End-to-end test automation framework for OrangeHRM
+### A production-ready Playwright + TypeScript framework demonstrating POM, session reuse, Allure 3 reporting, and AI-assisted QA
 
 [![Playwright](https://img.shields.io/badge/Playwright-1.60-45ba4b?logo=playwright&logoColor=white)](https://playwright.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -14,7 +14,7 @@
 
 ---
 
-A clean, production-ready Playwright + TypeScript automation framework built on the **Page Object Model**, with session-based authentication, structured logging, and Allure reporting — targeting the [OrangeHRM Demo](https://opensource-demo.orangehrmlive.com) application.
+End-to-end automation for [OrangeHRM](https://opensource-demo.orangehrmlive.com) — an open-source HR management system — built as a reference implementation showcasing real-world Playwright patterns: **Page Object Model**, **session reuse via `storageState`**, **Winston logging**, **Allure 3 reporting**, and **Claude Code AI agents** for test generation and QA documentation.
 
 ---
 
@@ -176,6 +176,8 @@ npm run auth:refresh
 
 ## Allure Report
 
+![Allure Report](assets/allure.png)
+
 Allure results are written to `allure-results/` automatically on every test run.
 
 **Standard workflow:**
@@ -245,6 +247,8 @@ Agent definitions live in `.claude/agents/`. Memory is stored in `.claude/agent-
 ---
 
 ## QA Docs
+
+![QA Test Cases](assets/testcase.png)
 
 The `qa-docs/` folder holds generated manual test case artifacts produced by `qa-scribe`.
 
