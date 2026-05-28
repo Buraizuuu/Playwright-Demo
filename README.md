@@ -217,11 +217,9 @@ npm run logs:clear    # wipe all log files
 
 This project ships with two built-in [Claude Code](https://claude.ai/code) agents that understand the framework conventions and can assist directly in your workflow.
 
-### 🤖 `qa-sentinel` — Automation Sentinel
+### 🤖 `qa-sentinel`
 
-> *Guards the quality of every test*
-
-A senior Playwright automation engineer. Use it for writing, reviewing, debugging, and refactoring automation code — it knows the full framework conventions.
+Playwright automation engineer. Write, review, debug, and refactor automation code — enforces POM conventions, locator strategy, and import rules.
 
 ```
 @agent-qa-sentinel review my new page object
@@ -229,18 +227,17 @@ A senior Playwright automation engineer. Use it for writing, reviewing, debuggin
 @agent-qa-sentinel write a test for the profile page
 ```
 
-### 📜 `qa-scribe` — Documentation Scribe
+### 📜 `qa-scribe`
 
-> *Turns automation into human-readable docs*
-
-A QA documentation engineer. Use it to convert your automation tests into a professionally formatted Excel manual test case document.
+QA documentation engineer. Converts automation tests into a structured Excel manual test case file.
 
 ```
 @agent-qa-scribe generate regression
 @agent-qa-scribe generate smoke
+@agent-qa-scribe generate from tests/login.spec.ts
 ```
 
-Output is written to `qa-docs/<type>-testcases.xlsx`.
+Output is written to `qa-docs/<type>-testcases.xlsx`. Versioned automatically (`-v2`, `-v3`) if the file already exists.
 
 Agent definitions live in `.claude/agents/`. Memory is stored in `.claude/agent-memory/`.
 

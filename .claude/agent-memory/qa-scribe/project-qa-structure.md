@@ -26,23 +26,29 @@ Note: `tests/auth.setup.ts` is infrastructure (not a test spec) and is excluded 
 - All `chromium` project tests inherit `.auth/user.json` — document as "user is pre-authenticated via stored session"
 - `tests/login.spec.ts` explicitly clears storageState: `test.use({ storageState: { cookies: [], origins: [] } })` — login UI is exercised from scratch; precondition must state "no active session exists"
 
-## Automation Coverage Gaps (updated 2026-05-28)
+## Automation Coverage (updated 2026-05-28)
 
-- TC-AUTH-002 through TC-AUTH-004 are now automated (wrong password, wrong username, empty fields) — reflected in testcases-v2.xlsx
-- TC-AUTH-005 and TC-AUTH-006 (empty username only / empty password only) remain Not Automated
-- No unauthenticated Dashboard access scenario automated (TC-DASH-002 remains Not Automated)
-- Dashboard assertions cover URL + heading only — no widget/content assertions (TC-DASH-003 remains Not Automated)
+All 9 test cases are fully automated as of testcases-v4.xlsx:
+
+- TC-AUTH-001 through TC-AUTH-006: Automated (login.spec.ts)
+- TC-DASH-001 through TC-DASH-003: Automated (dashboard.spec.ts)
+
+No coverage gaps remain.
 
 ## qa-docs Output
 
 ```
 qa-docs/
 ├── testcases.xlsx      (9 TCs total, v1 — superseded)
-└── testcases-v2.xlsx   (9 TCs total: TC-AUTH-001 to TC-AUTH-006, TC-DASH-001 to TC-DASH-003)
+├── testcases-v2.xlsx   (9 TCs total: TC-AUTH-001 to TC-AUTH-006, TC-DASH-001 to TC-DASH-003 — superseded)
+├── testcases-v3.xlsx   (9 TCs total: TC-AUTH-001 to TC-AUTH-006, TC-DASH-001 to TC-DASH-003 — superseded)
+└── testcases-v4.xlsx   (9 TCs total: all Automation Status = Automated — current)
 ```
 
 Generated: testcases.xlsx on 2026-05-28 (v1, superseded).
-Generated: testcases-v2.xlsx on 2026-05-28 via update request — reflects new `Authentication — Invalid Login` describe block (TC-AUTH-002 through TC-AUTH-004 upgraded from Not Automated to Automated).
+Generated: testcases-v2.xlsx on 2026-05-28 via update request — reflects new `Authentication — Invalid Login` describe block (TC-AUTH-002 through TC-AUTH-004 upgraded from Not Automated to Automated). Superseded.
+Generated: testcases-v3.xlsx on 2026-05-28 — fresh full-suite generation, no new spec changes; suite type regression, sheet tab "regression". Superseded.
+Generated: testcases-v4.xlsx on 2026-05-28 — TC-AUTH-005, TC-AUTH-006, TC-DASH-002, TC-DASH-003 upgraded from Not Automated to Automated; all 9 cases now fully automated.
 
 ## Next Available IDs
 

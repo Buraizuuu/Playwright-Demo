@@ -48,4 +48,24 @@ test.describe('Authentication — Invalid Login', () => {
 
     logger.info('Empty credentials rejected — "Required" validation displayed for both fields');
   });
+
+  test('[Login] should display required field error when only username is empty', async ({ loginPage }) => {
+    await loginPage.navigate();
+    await loginPage.login('', config.password);
+
+    const requiredErrors = loginPage.page.getByText('Required');
+    await expect(requiredErrors).toHaveCount(1);
+
+    logger.info('Empty username rejected — "Required" validation displayed for username field only');
+  });
+
+  test('[Login] should display required field error when only password is empty', async ({ loginPage }) => {
+    await loginPage.navigate();
+    await loginPage.login(config.username, '');
+
+    const requiredErrors = loginPage.page.getByText('Required');
+    await expect(requiredErrors).toHaveCount(1);
+
+    logger.info('Empty password rejected — "Required" validation displayed for password field only');
+  });
 });
