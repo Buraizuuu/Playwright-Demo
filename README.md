@@ -2,29 +2,42 @@
 
 # 🎭 Playwright Demo
 
-### End-to-end automation framework for OrangeHRM
+### End-to-end test automation framework for OrangeHRM
 
 [![Playwright](https://img.shields.io/badge/Playwright-1.60-45ba4b?logo=playwright&logoColor=white)](https://playwright.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![Allure](https://img.shields.io/badge/Allure-3.x-orange?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyeiIvPjwvc3ZnPg==)](https://allurereport.org)
 [![License](https://img.shields.io/badge/License-ISC-blue)](#)
 
 </div>
 
 ---
 
-Playwright + TypeScript automation framework for [OrangeHRM Demo](https://opensource-demo.orangehrmlive.com) using the Page Object Model.
+A clean, production-ready Playwright + TypeScript automation framework built on the **Page Object Model**, with session-based authentication, structured logging, and Allure reporting — targeting the [OrangeHRM Demo](https://opensource-demo.orangehrmlive.com) application.
+
+---
+
+## Features
+
+- **Page Object Model** — one class per page, locators and actions cleanly separated
+- **Session reuse** — logs in once, saves `storageState`, all tests start pre-authenticated
+- **Structured logging** — Winston writes timestamped logs to `logs/` for every run
+- **Allure 3 reporting** — rich visual test reports with steps, attachments, and history
+- **AI agents** — Claude Code agents for test generation and QA documentation
+- **Environment isolation** — all credentials and URLs managed via `.env`, never hardcoded
 
 ---
 
 ## Stack
 
-| Tool | Purpose |
-|---|---|
-| [Playwright](https://playwright.dev) | Browser automation |
-| TypeScript | Type-safe test code |
-| Winston | Structured logging |
-| dotenv | Environment variable management |
+| Tool | Version | Purpose |
+|---|---|---|
+| [Playwright](https://playwright.dev) | 1.60+ | Browser automation and test runner |
+| TypeScript | 5.x | Type-safe test code |
+| Winston | 3.x | Structured logging to file and console |
+| dotenv | 17.x | Environment variable management |
+| Allure Report | 3.x | Visual test reporting (`allure-playwright` + `allure` CLI) |
 
 ---
 
@@ -35,29 +48,38 @@ Playwright-Demo/
 ├── .auth/                  # Saved auth state — generated at runtime (gitignored)
 ├── configs/
 │   ├── env.ts              # Typed config object — wraps .env values
-│   ├── global-setup.ts     # Logs SUITE START before all tests
-│   └── global-teardown.ts  # Logs SUITE END after all tests
+│   ├── global-setup.ts     # Runs once before all tests — logs SUITE START
+│   └── global-teardown.ts  # Runs once after all tests — logs SUITE END
 ├── fixtures/
-│   └── index.ts            # Extended test — injects page objects
+│   └── index.ts            # Extended test — injects page objects + afterEach logger
 ├── pages/
 │   ├── login.page.ts       # LoginPage — locators + actions
 │   └── dashboard.page.ts   # DashboardPage — locators + actions + verify
 ├── tests/
 │   ├── auth.setup.ts       # Logs in once and saves storageState
 │   ├── login.spec.ts       # Tests the login UI flow
-│   └── dashboard.spec.ts   # Tests dashboard using saved auth state
+│   └── dashboard.spec.ts   # Tests the dashboard using saved auth state
 ├── utils/
 │   └── logger.ts           # Winston logger (console + file output)
 ├── logs/                   # Runtime logs — gitignored
-├── qa-docs/                # Generated QA artifacts and test case output
-├── .claude/                # Claude agent definitions and memory
+├── allure-results/         # Raw Allure test data — gitignored
+├── allure-report/          # Generated Allure HTML report — gitignored
+├── qa-docs/                # Generated QA artifacts (manual test case docs)
+├── .claude/                # Claude Code agent definitions and memory
 ├── .env                    # Credentials — never committed
 └── playwright.config.ts    # Playwright configuration
 ```
 
 ---
 
-## Setup
+## Prerequisites
+
+- [Node.js](https://nodejs.org) 18 or higher
+- [Java](https://www.java.com) (required by the Allure CLI)
+
+---
+
+## Quick Start
 
 **1. Install dependencies**
 ```bash
@@ -69,31 +91,61 @@ npm install
 npx playwright install
 ```
 
-**3. Create `.env` file** (copy from `.env.example` and fill in your credentials)
+**3. Create your `.env` file**
+
+Copy `.env.example` and fill in your credentials:
 ```
 BASE_URL=https://opensource-demo.orangehrmlive.com
 LOGIN_USERNAME=<username>
 LOGIN_PASSWORD=<password>
 ```
 
+**4. Run the tests**
+```bash
+npm test
+```
+
+**5. View the Allure report**
+```bash
+npm run allure:serve
+```
+
 ---
 
 ## Running Tests
 
+### Test execution
+
 | Command | Description |
 |---|---|
-| `npm test` | Run all tests |
-| `npm run test:ui` | Open Playwright UI mode |
+| `npm test` | Run the full test suite |
+| `npm run test:ui` | Launch Playwright UI mode |
 | `npx playwright test --project=chromium` | Run chromium project only |
 | `npx playwright test tests/login.spec.ts` | Run login spec only |
 | `npx playwright test tests/dashboard.spec.ts` | Run dashboard spec only |
-| `npx playwright show-report` | Open last HTML report |
+
+### Reports
+
+| Command | Description |
+|---|---|
+| `npx playwright show-report` | Open the built-in Playwright HTML report |
+| `npm run allure:serve` | Generate and open Allure report in browser |
+| `npm run allure:generate` | Generate Allure report to `allure-report/` |
+| `npm run allure:open` | Open a previously generated Allure report |
+| `npm run allure:clean` | Wipe `allure-results/` and `allure-report/` |
+
+### Utilities
+
+| Command | Description |
+|---|---|
+| `npm run auth:refresh` | Force a fresh login and regenerate `.auth/user.json` |
+| `npm run logs:clear` | Clear all files in `logs/` |
 
 ---
 
 ## Test Coverage
 
-| Spec File | Describe | Test |
+| Spec | Suite | Test Case |
 |---|---|---|
 | `login.spec.ts` | Authentication | `[Login] should allow user access with valid credentials` |
 | `login.spec.ts` | Authentication — Invalid Login | `[Login] should display error when wrong password is provided` |
@@ -103,76 +155,97 @@ LOGIN_PASSWORD=<password>
 
 ---
 
-## Auth State (storageState)
+## Auth State
 
-Tests run against a pre-authenticated browser context to skip login on every test.
+All tests in the `chromium` project start **pre-authenticated** using a saved browser session.
 
 **How it works:**
-1. The `setup` project runs `auth.setup.ts` — logs in once and saves `.auth/user.json`
-2. All tests in the `chromium` project load that saved state automatically
-3. `auth.setup.ts` skips the login if `.auth/user.json` already exists
+1. The `setup` project runs `auth.setup.ts` once before any test
+2. It logs in and saves the session to `.auth/user.json`
+3. If `.auth/user.json` already exists and is valid, login is skipped
+4. All `chromium` tests load that saved state automatically
 
-**To generate a fresh auth state:**
+**Force a fresh login:**
 ```bash
 npm run auth:refresh
 ```
 
-> Tests that specifically test the login UI (e.g. `login.spec.ts`) clear the inherited state with `test.use({ storageState: { cookies: [], origins: [] } })`.
+> Tests that verify the login UI (e.g. `login.spec.ts`) explicitly clear the inherited session with `test.use({ storageState: { cookies: [], origins: [] } })`.
+
+---
+
+## Allure Report
+
+Allure results are written to `allure-results/` automatically on every test run.
+
+**Standard workflow:**
+```bash
+npm test
+npm run allure:serve
+```
+
+**Viewing a selective run (IDE extension):**
+```bash
+npm run allure:clean   # clear stale results first
+# run your test via the IDE extension
+npm run allure:serve
+```
+
+> The VS Code Playwright extension does not trigger `globalSetup`, so `allure-results/` accumulates across IDE runs. Run `allure:clean` before any selective run to ensure the report reflects only what you just executed.
 
 ---
 
 ## Logs
 
-Logs are written to `logs/` at runtime (gitignored).
+Logs are written to `logs/` during every test run (gitignored).
 
 | File | Content |
 |---|---|
 | `logs/info.log` | Info-level messages |
-| `logs/error.log` | Error-level messages |
+| `logs/error.log` | Error-level and above |
 | `logs/test.log` | All levels — full execution trace |
 
-**To clear all log files:**
 ```bash
-npm run logs:clear
+npm run logs:clear    # wipe all log files
 ```
 
 ---
 
 ## Claude Code Agents
 
-This project includes custom Claude Code agents for automation and QA documentation.
+This project ships with two built-in [Claude Code](https://claude.ai/code) agents that understand the framework conventions and can assist directly in your workflow.
 
-**Available agents:**
-- `qa-sentinel` — specialized for Playwright TypeScript automation engineering
-- `qa-scribe` — converts automation tests into manual Excel test case artifacts
+### 🤖 `qa-sentinel` — Automation Sentinel
 
-**Invoke them with:**
+> *Guards the quality of every test*
+
+A senior Playwright automation engineer. Use it for writing, reviewing, debugging, and refactoring automation code — it knows the full framework conventions.
+
 ```
-@agent-qa-sentinel <your request>
-@agent-qa-scribe <request for manual test cases>
+@agent-qa-sentinel review my new page object
+@agent-qa-sentinel why is this test flaky?
+@agent-qa-sentinel write a test for the profile page
 ```
 
-**What they handle:**
-- `qa-sentinel`: writing and reviewing page objects, fixtures, and tests
-- `qa-sentinel`: diagnosing flaky tests and synchronization issues
-- `qa-sentinel`: refactoring automation code with full dependency analysis
-- `qa-sentinel`: enforcing project conventions (locator priority, import rules, POM structure)
-- `qa-scribe`: generating one Excel test case file in `qa-docs/` from the tests directory
+### 📜 `qa-scribe` — Documentation Scribe
 
-The agent definitions live at `.claude/agents/qa-sentinel.md` and `.claude/agents/qa-scribe.md`, with memory in `.claude/agent-memory/`.
+> *Turns automation into human-readable docs*
+
+A QA documentation engineer. Use it to convert your automation tests into a professionally formatted Excel manual test case document.
+
+```
+@agent-qa-scribe generate regression
+@agent-qa-scribe generate smoke
+```
+
+Output is written to `qa-docs/<type>-testcases.xlsx`.
+
+Agent definitions live in `.claude/agents/`. Memory is stored in `.claude/agent-memory/`.
 
 ---
 
 ## QA Docs
 
-The `qa-docs/` folder contains generated QA artifacts and manual test case output.
+The `qa-docs/` folder holds generated manual test case artifacts produced by `qa-scribe`.
 
-**Example file:**
-- `qa-docs/testcases.xlsx`
-
-**How it works:**
-- `qa-scribe` reads the `tests/` directory
-- It converts automation flows into a single Excel test case document
-- Generated files are written to `qa-docs/`
-
-> The `qa-docs/` folder is used for manual test case artifacts, not runtime test results.
+Files are named by suite type — e.g. `qa-docs/regression-testcases.xlsx` — and versioned automatically (`-v2`, `-v3`) if a file already exists.

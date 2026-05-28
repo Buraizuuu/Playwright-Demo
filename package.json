@@ -7,7 +7,11 @@
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "auth:refresh": "node -e \"try{require('fs').unlinkSync('.auth/user.json')}catch(e){}\" && playwright test --project=setup",
-    "logs:clear": "node -e \"['info','error','test'].forEach(f=>{try{require('fs').unlinkSync('logs/'+f+'.log')}catch(e){}})\""
+    "logs:clear": "node -e \"['info','error','test'].forEach(f=>{try{require('fs').unlinkSync('logs/'+f+'.log')}catch(e){}}})\"",
+    "allure:clean": "node -e \"['allure-results','allure-report'].forEach(d=>require('fs').rmSync(d,{recursive:true,force:true}))\"",
+    "allure:serve": "allure serve allure-results",
+    "allure:generate": "allure generate allure-results -o allure-report",
+    "allure:open": "allure open allure-report"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +20,8 @@
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.9.1",
+    "allure": "^3.8.2",
+    "allure-playwright": "^3.9.0",
     "xlsx": "^0.18.5"
   },
   "dependencies": {

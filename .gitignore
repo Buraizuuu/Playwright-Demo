@@ -13,6 +13,10 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 
+# Allure output
+/allure-results/
+/allure-report/
+
 # Auth state — contains session cookies, never commit
 .auth/
 

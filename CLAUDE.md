@@ -5,6 +5,7 @@
 - Page Object Model (POM)
 - Winston logging
 - dotenv for environment variables
+- Allure Report (`allure-playwright` reporter + `allure` CLI)
 
 ---
 
@@ -59,6 +60,29 @@ Analyze the existing codebase structure before implementing changes.
 - Use `test.describe()` to group by feature
 - Test title format: `[Action] should <expected outcome>`
 - Keep test body to: navigate → act → assert → log
+
+## Allure Report
+
+- Reporter configured in `playwright.config.ts` with `resultsDir: 'allure-results'`
+- Results are written automatically on every test run (CLI or IDE extension)
+- `allure-results/` and `allure-report/` are gitignored — never commit them
+
+### Scripts
+| Script | Purpose |
+|---|---|
+| `npm run allure:serve` | Generate + open report in browser (recommended) |
+| `npm run allure:generate` | Generate report to `allure-report/` |
+| `npm run allure:open` | Open a previously generated report |
+| `npm run allure:clean` | Wipe `allure-results/` and `allure-report/` |
+
+### Workflow
+```
+Run tests (npm test or IDE extension)
+npm run allure:clean      # clear stale results first if running selective tests
+npm run allure:serve      # generate + open
+```
+
+> The VS Code Playwright extension does **not** trigger `globalSetup`, so `allure-results/` accumulates across IDE runs. Always run `allure:clean` before viewing a selective run.
 
 ---
 

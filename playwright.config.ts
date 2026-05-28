@@ -10,7 +10,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: [
+    ['html'],
+    ['allure-playwright', { resultsDir: 'allure-results' }],
+  ],
   use: {
     baseURL: process.env.BASE_URL,
     headless: false,
