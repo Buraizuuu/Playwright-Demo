@@ -204,6 +204,24 @@ A specialised sub-agent for Playwright TypeScript automation tasks.
 
 **Do not use for:** general TypeScript, infrastructure changes, or non-test code.
 
+## qa-scribe
+
+A specialised sub-agent for generating Excel test case documentation from Playwright specs.
+
+**Definition:** `.claude/agents/qa-scribe.md`
+**Memory:** `.claude/agent-memory/qa-scribe/`
+
+**Invoke with:** `@agent-qa-scribe <request>`
+
+**Use for:**
+- Converting automation tests into manual test cases
+- Producing one Excel file in `qa-docs/` per requested suite type (e.g. `qa-docs/regression-testcases.xlsx`)
+- Documenting preconditions, steps, expected results, and source file references
+
+**Output naming:** `qa-docs/<type>-testcases.xlsx` — appends `-v2`, `-v3` if file already exists.
+
+**Do not use for:** multi-file exports or raw TypeScript reporting.
+
 ---
 
 # Expected AI Behavior

@@ -1,0 +1,1 @@
+- [Project QA Structure](project-qa-structure.md) — module naming, test scope, qa-docs layout, next available TC IDs, coverage gaps found on 2026-05-28

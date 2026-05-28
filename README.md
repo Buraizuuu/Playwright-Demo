@@ -49,6 +49,8 @@ Playwright-Demo/
 ├── utils/
 │   └── logger.ts           # Winston logger (console + file output)
 ├── logs/                   # Runtime logs — gitignored
+├── qa-docs/                # Generated QA artifacts and test case output
+├── .claude/                # Claude agent definitions and memory
 ├── .env                    # Credentials — never committed
 └── playwright.config.ts    # Playwright configuration
 ```
@@ -83,8 +85,21 @@ LOGIN_PASSWORD=<password>
 | `npm test` | Run all tests |
 | `npm run test:ui` | Open Playwright UI mode |
 | `npx playwright test --project=chromium` | Run chromium project only |
-| `npx playwright test tests/login.spec.ts` | Run a single spec file |
+| `npx playwright test tests/login.spec.ts` | Run login spec only |
+| `npx playwright test tests/dashboard.spec.ts` | Run dashboard spec only |
 | `npx playwright show-report` | Open last HTML report |
+
+---
+
+## Test Coverage
+
+| Spec File | Describe | Test |
+|---|---|---|
+| `login.spec.ts` | Authentication | `[Login] should allow user access with valid credentials` |
+| `login.spec.ts` | Authentication — Invalid Login | `[Login] should display error when wrong password is provided` |
+| `login.spec.ts` | Authentication — Invalid Login | `[Login] should display error when wrong username is provided` |
+| `login.spec.ts` | Authentication — Invalid Login | `[Login] should display required field errors when both fields are empty` |
+| `dashboard.spec.ts` | Dashboard | `[Dashboard] should load for authenticated user` |
 
 ---
 
@@ -123,41 +138,41 @@ npm run logs:clear
 
 ---
 
-## Claude Code Agent
+## Claude Code Agents
 
-This project includes a custom Claude Code agent — **qa-sentinel** — specialised for Playwright TypeScript automation.
+This project includes custom Claude Code agents for automation and QA documentation.
 
-**Invoke it with:**
+**Available agents:**
+- `qa-sentinel` — specialized for Playwright TypeScript automation engineering
+- `qa-scribe` — converts automation tests into manual Excel test case artifacts
+
+**Invoke them with:**
 ```
 @agent-qa-sentinel <your request>
+@agent-qa-scribe <request for manual test cases>
 ```
 
-**What it handles:**
-- Writing and reviewing page objects, fixtures, and tests
-- Diagnosing flaky tests and synchronization issues
-- Refactoring automation code with full dependency analysis
-- Enforcing all project conventions (locator priority, import rules, POM structure)
+**What they handle:**
+- `qa-sentinel`: writing and reviewing page objects, fixtures, and tests
+- `qa-sentinel`: diagnosing flaky tests and synchronization issues
+- `qa-sentinel`: refactoring automation code with full dependency analysis
+- `qa-sentinel`: enforcing project conventions (locator priority, import rules, POM structure)
+- `qa-scribe`: generating one Excel test case file in `qa-docs/` from the tests directory
 
-The agent definition lives at `.claude/agents/qa-sentinel.md` and its persistent memory at `.claude/agent-memory/qa-sentinel/`.
+The agent definitions live at `.claude/agents/qa-sentinel.md` and `.claude/agents/qa-scribe.md`, with memory in `.claude/agent-memory/`.
 
 ---
 
-## Vault (Obsidian Docs)
+## QA Docs
 
-The `vault/` folder contains framework documentation written in Markdown, designed to be opened in [Obsidian](https://obsidian.md).
+The `qa-docs/` folder contains generated QA artifacts and manual test case output.
 
-**To open in Obsidian:**
-1. Download and install [Obsidian](https://obsidian.md)
-2. Click **Open folder as vault**
-3. Select the `vault/` folder inside this project
+**Example file:**
+- `qa-docs/testcases.xlsx`
 
-**Notes:**
-| File | Contents |
-|---|---|
-| `Project-Overview.md` | Stack, app under test, credentials, run commands |
-| `Framework-Architecture.md` | Layer diagram, execution flow, file roles |
-| `Framework-Rules.md` | Naming conventions, page object rules, test rules |
-| `Folder-Structure.md` | Full directory tree with descriptions |
-| `Locator-Strategy.md` | Locator priority order with real examples |
-| `Reusable-Patterns.md` | Copy-paste patterns for pages, fixtures, config, logger |
-| `Known-Issues.md` | Windows env var conflicts and resolved bugs |
+**How it works:**
+- `qa-scribe` reads the `tests/` directory
+- It converts automation flows into a single Excel test case document
+- Generated files are written to `qa-docs/`
+
+> The `qa-docs/` folder is used for manual test case artifacts, not runtime test results.

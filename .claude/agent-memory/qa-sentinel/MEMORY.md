@@ -1,0 +1,1 @@
+- [Project Structure](project-structure.md) — OrangeHRM target app, confirmed page objects, fixture wiring, and error UI behavior
