@@ -2,7 +2,8 @@
 
 ## Project Stack
 - Playwright + TypeScript
-- Page Object Model (POM)
+- Page Object Model (POM) — UI tests
+- Playwright Request API — API tests
 - Winston logging
 - dotenv for environment variables
 - Allure Report (`allure-playwright` reporter + `allure` CLI)
@@ -19,6 +20,8 @@ Analyze the existing codebase structure before implementing changes.
 
 ## Imports
 - Import `test` from `fixtures/` — never from `@playwright/test` directly
+  - UI tests → import from `fixtures/index.ts`
+  - API tests → import from `fixtures/api.fixtures.ts`
 - Exception: `auth.setup.ts` uses `test as setup` from `@playwright/test` — it is infrastructure, not a test
 - Import `config` from `configs/env` — never use `process.env` directly in tests or page objects
 
@@ -55,11 +58,46 @@ Analyze the existing codebase structure before implementing changes.
 - Access via `config` from `configs/env.ts` — never `process.env` directly
 - Never hardcode credentials in tests or page objects
 - Avoid `USERNAME` — reserved by Windows; use `LOGIN_USERNAME`
+- `API_BASE_URL` — base URL for the REST API under test; consumed by the `api` project in `playwright.config.ts` as `use.baseURL`
 
 ## Test Structure
+- Tests are organised by type under `tests/`:
+  - `tests/ui/` — browser-based UI specs
+  - `tests/api/` — API specs (feature-based subdirectories)
+  - `tests/auth.setup.ts` — infrastructure, stays at root
 - Use `test.describe()` to group by feature
 - Test title format: `[Action] should <expected outcome>`
 - Keep test body to: navigate → act → assert → log
+
+## API Testing
+
+### Layer architecture
+```
+Test (tests/api/<feature>/*.spec.ts)
+  └── imports fixture from fixtures/api.fixtures.ts
+        └── BookingService  (api/services/<feature>/<feature>.service.ts)
+              └── BaseClient  (api/clients/base.client.ts)
+                    └── Playwright APIRequestContext
+                          └── resolves baseURL from playwright.config.ts api project
+```
+
+### Rules
+- Never hardcode paths in tests or services — all endpoint paths live in `api/endpoints/<feature>.endpoints.ts`
+- `BaseClient` receives `APIRequestContext` via fixture; Playwright resolves `baseURL` automatically
+- Service methods return `APIResponse` — tests assert on both status and body
+- The `api` Playwright project has its own `testDir: ./tests/api` and `use.baseURL: API_BASE_URL`
+- The `api` project has **no `dependencies`** — it never needs browser auth state
+- The `chromium` project uses `testIgnore: '**/api/**'` to prevent it from picking up API specs
+
+### Adding a new API feature
+Follow this 5-file pattern:
+1. `api/endpoints/<feature>.endpoints.ts` — path constants
+2. `api/services/<feature>/<feature>.types.ts` — TypeScript interfaces
+3. `api/services/<feature>/<feature>.service.ts` — service methods using `BaseClient` + endpoints
+4. `fixtures/api.fixtures.ts` — add fixture property, inject new service
+5. `tests/api/<feature>/<test-name>.spec.ts` — import from `fixtures/api.fixtures`
+
+---
 
 ## Allure Report
 
@@ -96,6 +134,7 @@ This includes:
 - utilities (`utils/`)
 - fixtures (`fixtures/`)
 - page objects (`pages/`)
+- API clients, endpoints, and services (`api/`)
 - folder structure
 
 When changes affect shared functionality:

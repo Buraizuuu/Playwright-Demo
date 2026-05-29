@@ -2,7 +2,7 @@
 
 # 🎭 OrangeHRM Test Automation
 
-### A production-ready Playwright + TypeScript framework demonstrating POM, session reuse, Allure 3 reporting, and AI-assisted QA
+### A production-ready Playwright + TypeScript framework demonstrating POM, session reuse, API testing, Allure 3 reporting, and AI-assisted QA
 
 [![Playwright](https://img.shields.io/badge/Playwright-1.60-45ba4b?logo=playwright&logoColor=white)](https://playwright.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -14,14 +14,15 @@
 
 ---
 
-End-to-end automation for [OrangeHRM](https://opensource-demo.orangehrmlive.com) — an open-source HR management system — built as a reference implementation showcasing real-world Playwright patterns: **Page Object Model**, **session reuse via `storageState`**, **Winston logging**, **Allure 3 reporting**, and **Claude Code AI agents** for test generation and QA documentation.
+End-to-end and API automation for [OrangeHRM](https://opensource-demo.orangehrmlive.com) and the [Restful Booker API](https://restful-booker.herokuapp.com) — built as a reference implementation showcasing real-world Playwright patterns: **Page Object Model**, **session reuse via `storageState`**, **Playwright Request API**, **Winston logging**, **Allure 3 reporting**, and **Claude Code AI agents** for test generation and QA documentation.
 
 ---
 
 ## Features
 
 - **Page Object Model** — one class per page, locators and actions cleanly separated
-- **Session reuse** — logs in once, saves `storageState`, all tests start pre-authenticated
+- **API testing** — feature-based service layer using Playwright Request API; no hardcoded URLs
+- **Session reuse** — logs in once, saves `storageState`, all UI tests start pre-authenticated
 - **Structured logging** — Winston writes timestamped logs to `logs/` for every run
 - **Allure 3 reporting** — rich visual test reports with steps, attachments, and history
 - **AI agents** — Claude Code agents for test generation and QA documentation
@@ -45,29 +46,43 @@ End-to-end automation for [OrangeHRM](https://opensource-demo.orangehrmlive.com)
 
 ```
 Playwright-Demo/
-├── .auth/                  # Saved auth state — generated at runtime (gitignored)
+├── api/                                    # API testing layer
+│   ├── clients/
+│   │   └── base.client.ts                  # Base HTTP client — wraps Playwright APIRequestContext
+│   ├── endpoints/
+│   │   └── booking.endpoints.ts            # Endpoint path constants (no hardcoded URLs in tests)
+│   └── services/
+│       └── booking/
+│           ├── booking.service.ts          # Booking API methods — returns APIResponse
+│           └── booking.types.ts            # TypeScript interfaces for booking data
+├── .auth/                                  # Saved auth state — generated at runtime (gitignored)
 ├── configs/
-│   ├── env.ts              # Typed config object — wraps .env values
-│   ├── global-setup.ts     # Runs once before all tests — logs SUITE START
-│   └── global-teardown.ts  # Runs once after all tests — logs SUITE END
+│   ├── env.ts                              # Typed config object — wraps .env values
+│   ├── global-setup.ts                     # Runs once before all tests — logs SUITE START
+│   └── global-teardown.ts                  # Runs once after all tests — logs SUITE END
 ├── fixtures/
-│   └── index.ts            # Extended test — injects page objects + afterEach logger
+│   ├── index.ts                            # UI test fixture — injects page objects + afterEach logger
+│   └── api.fixtures.ts                     # API test fixture — injects services via DI
 ├── pages/
-│   ├── login.page.ts       # LoginPage — locators + actions
-│   └── dashboard.page.ts   # DashboardPage — locators + actions + verify
+│   ├── login.page.ts                       # LoginPage — locators + actions
+│   └── dashboard.page.ts                   # DashboardPage — locators + actions + verify
 ├── tests/
-│   ├── auth.setup.ts       # Logs in once and saves storageState
-│   ├── login.spec.ts       # Tests the login UI flow
-│   └── dashboard.spec.ts   # Tests the dashboard using saved auth state
+│   ├── ui/
+│   │   ├── login.spec.ts                   # Tests the login UI flow
+│   │   └── dashboard.spec.ts               # Tests the dashboard using saved auth state
+│   ├── api/
+│   │   └── booking/
+│   │       └── get-bookings.spec.ts        # API tests — GET /booking, GET /booking/:id, filter by name
+│   └── auth.setup.ts                       # Logs in once and saves storageState (infrastructure)
 ├── utils/
-│   └── logger.ts           # Winston logger (console + file output)
-├── logs/                   # Runtime logs — gitignored
-├── allure-results/         # Raw Allure test data — gitignored
-├── allure-report/          # Generated Allure HTML report — gitignored
-├── qa-docs/                # Generated QA artifacts (manual test case docs)
-├── .claude/                # Claude Code agent definitions and memory
-├── .env                    # Credentials — never committed
-└── playwright.config.ts    # Playwright configuration
+│   └── logger.ts                           # Winston logger (console + file output)
+├── logs/                                   # Runtime logs — gitignored
+├── allure-results/                         # Raw Allure test data — gitignored
+├── allure-report/                          # Generated Allure HTML report — gitignored
+├── qa-docs/                                # Generated QA artifacts (manual test case docs)
+├── .claude/                                # Claude Code agent definitions and memory
+├── .env                                    # Credentials — never committed
+└── playwright.config.ts                    # Playwright configuration (ui + api projects)
 ```
 
 ---
@@ -98,6 +113,7 @@ Copy `.env.example` and fill in your credentials:
 BASE_URL=https://opensource-demo.orangehrmlive.com
 LOGIN_USERNAME=<username>
 LOGIN_PASSWORD=<password>
+API_BASE_URL=https://restful-booker.herokuapp.com
 ```
 
 **4. Run the tests**
@@ -118,11 +134,14 @@ npm run allure:serve
 
 | Command | Description |
 |---|---|
-| `npm test` | Run the full test suite |
+| `npm test` | Run the full test suite (UI + API) |
+| `npm run test:api` | Run API tests only |
 | `npm run test:ui` | Launch Playwright UI mode |
-| `npx playwright test --project=chromium` | Run chromium project only |
-| `npx playwright test tests/login.spec.ts` | Run login spec only |
-| `npx playwright test tests/dashboard.spec.ts` | Run dashboard spec only |
+| `npx playwright test --project=chromium` | Run UI (chromium) project only |
+| `npx playwright test --project=api` | Run API project only |
+| `npx playwright test tests/ui/login.spec.ts` | Run login spec only |
+| `npx playwright test tests/ui/dashboard.spec.ts` | Run dashboard spec only |
+| `npx playwright test tests/api/booking/get-bookings.spec.ts` | Run booking API spec only |
 
 ### Reports
 
@@ -145,13 +164,61 @@ npm run allure:serve
 
 ## Test Coverage
 
+### UI Tests
+
 | Spec | Suite | Test Case |
 |---|---|---|
-| `login.spec.ts` | Authentication | `[Login] should allow user access with valid credentials` |
-| `login.spec.ts` | Authentication — Invalid Login | `[Login] should display error when wrong password is provided` |
-| `login.spec.ts` | Authentication — Invalid Login | `[Login] should display error when wrong username is provided` |
-| `login.spec.ts` | Authentication — Invalid Login | `[Login] should display required field errors when both fields are empty` |
-| `dashboard.spec.ts` | Dashboard | `[Dashboard] should load for authenticated user` |
+| `tests/ui/login.spec.ts` | Authentication | `[Login] should allow user access with valid credentials` |
+| `tests/ui/login.spec.ts` | Authentication — Invalid Login | `[Login] should display error when wrong password is provided` |
+| `tests/ui/login.spec.ts` | Authentication — Invalid Login | `[Login] should display error when wrong username is provided` |
+| `tests/ui/login.spec.ts` | Authentication — Invalid Login | `[Login] should display required field errors when both fields are empty` |
+| `tests/ui/dashboard.spec.ts` | Dashboard | `[Dashboard] should load for authenticated user` |
+
+### API Tests
+
+| Spec | Suite | Test Case |
+|---|---|---|
+| `tests/api/booking/get-bookings.spec.ts` | Booking API | `[GET /booking] should return a list of booking IDs` |
+| `tests/api/booking/get-bookings.spec.ts` | Booking API | `[GET /booking/:id] should return a booking by its ID` |
+| `tests/api/booking/get-bookings.spec.ts` | Booking API | `[GET /booking] should filter bookings by firstname and lastname` |
+
+---
+
+## API Testing
+
+API tests use Playwright's built-in `request` context — no browser is launched.
+
+### Request flow
+
+```
+Test
+ └── imports from fixtures/api.fixtures.ts
+       └── BookingService (injected via fixture)
+             └── BaseClient (wraps Playwright APIRequestContext)
+                   └── HTTP call using path from booking.endpoints.ts
+                         └── baseURL resolved from playwright.config.ts api project
+```
+
+### Playwright projects
+
+The `playwright.config.ts` defines two separate projects:
+
+| Project | `testDir` | `baseURL` | Auth dependency |
+|---|---|---|---|
+| `chromium` | `./tests` (excludes `api/`) | `BASE_URL` | `setup` (auth.setup.ts) |
+| `api` | `./tests/api` | `API_BASE_URL` | none |
+
+### Scaling to new APIs
+
+Add a new feature in 5 files — no changes to existing code required:
+
+```
+api/endpoints/<feature>.endpoints.ts      ← path constants
+api/services/<feature>/<feature>.types.ts ← TypeScript interfaces
+api/services/<feature>/<feature>.service.ts ← service methods
+fixtures/api.fixtures.ts                  ← add fixture property
+tests/api/<feature>/<test>.spec.ts        ← test spec
+```
 
 ---
 

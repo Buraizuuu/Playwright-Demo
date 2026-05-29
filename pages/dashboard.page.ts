@@ -4,15 +4,15 @@ export class DashboardPage {
   readonly page: Page;
   readonly heading: Locator;
   readonly quickLaunchWidget: Locator;
-  readonly timeAtWorkWidget: Locator;
   readonly myActionsWidget: Locator;
+  readonly employeeDistributionWidget: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.heading = page.getByRole('heading', { name: 'Dashboard' });
     this.quickLaunchWidget = page.getByText('Quick Launch');
-    this.timeAtWorkWidget = page.getByText('Time at Work');
     this.myActionsWidget = page.getByText('My Actions');
+    this.employeeDistributionWidget = page.getByText('Employee Distribution by Sub Unit');
   }
 
   async navigate(): Promise<void> {
@@ -26,7 +26,7 @@ export class DashboardPage {
 
   async verifyWidgetsVisible(): Promise<void> {
     await expect(this.quickLaunchWidget).toBeVisible();
-    await expect(this.timeAtWorkWidget).toBeVisible();
     await expect(this.myActionsWidget).toBeVisible();
+    await expect(this.employeeDistributionWidget).toBeVisible();
   }
 }

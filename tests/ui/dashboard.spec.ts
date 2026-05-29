@@ -1,5 +1,5 @@
-import { test, expect } from '../fixtures';
-import { logger } from '../utils/logger';
+import { test, expect } from '../../fixtures';
+import { logger } from '../../utils/logger';
 
 // storageState is inherited from the chromium project — starts pre-authenticated
 
@@ -15,7 +15,7 @@ test.describe('Dashboard', () => {
     await dashboardPage.navigate();
     await dashboardPage.verifyWidgetsVisible();
 
-    logger.info('Dashboard widgets verified: Quick Launch, Time at Work, My Actions');
+    logger.info('Dashboard widgets verified: Quick Launch, My Actions, Employee Distribution by Sub Unit');
   });
 });
 

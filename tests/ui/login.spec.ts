@@ -1,6 +1,6 @@
-import { config } from '../configs/env';
-import { test, expect } from '../fixtures';
-import { logger } from '../utils/logger';
+import { config } from '../../configs/env';
+import { test, expect } from '../../fixtures';
+import { logger } from '../../utils/logger';
 
 // Clear auth state — this spec tests the login UI directly
 test.use({ storageState: { cookies: [], origins: [] } });
